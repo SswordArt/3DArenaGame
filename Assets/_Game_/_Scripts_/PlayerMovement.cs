@@ -33,7 +33,10 @@ public class PlayerMovement : MonoBehaviour
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.33f, whatIsGround);
         Debug.DrawRay(transform.position, Vector3.down * (playerHeight * 0.5f + 0.33f), Color.red);
+
         MyInput();
+        speedControl();
+
         if (grounded)
         {
             rb.linearDamping = GroundDrag;
@@ -59,5 +62,16 @@ public class PlayerMovement : MonoBehaviour
         moveDir = oriantation.forward * verticalInput + oriantation.right * horizontalInput;
 
         rb.AddForce(moveDir.normalized * moveSpeed * 10f,ForceMode.Force);
+    }
+
+    void speedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        if(flatVel.magnitude > moveSpeed)
+        {
+            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            rb.linearVelocity = new Vector3(limitedVel.x, 0f, limitedVel.z);
+        }
+
     }
 }
